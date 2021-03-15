@@ -2,7 +2,12 @@ package com.example.controller;
 
 import java.util.List;
 
+import com.example.dto.UserRequestDTO;
+import com.example.dto.UserResponseDTO;
+import com.example.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,27 +20,29 @@ import com.example.model.User;
 import com.example.service.UserService;
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/user/")
 public class UserController {
 
 	@Autowired
-	UserService service;
+	IUserService service;
 	
-	@GetMapping("user")
-	List<User> getAllUsers(@RequestParam String filter, @RequestParam String keyword)
+	@GetMapping("getAll")
+	public ResponseEntity<List<UserResponseDTO>> getAllUsers(@RequestParam("type") String filter,
+															 @RequestParam("keyword") String keyword)
 	{
-		return service.getAllUsers(filter, keyword);
+		return new ResponseEntity<>(service.getAllUsers(filter, keyword), HttpStatus.OK);
 	}
-	
-	@PostMapping("user")
-	String createUser(@RequestBody User user)
-	{
-		return "";
+
+	@GetMapping("get/{id}")
+	public ResponseEntity<UserResponseDTO> getUser(@PathVariable("id") Long id) {
+		return new ResponseEntity<>(service.getUser(id), HttpStatus.OK);
 	}
-	
-	@GetMapping("user/{id}")
-	User getUser(@PathVariable Long id) {
-		return service.getUser(id);
+
+
+	@PostMapping("create")
+	public ResponseEntity<String> createUser(@RequestBody UserRequestDTO userRequestDTO) {
+		service.createUser(userRequestDTO);
+		return new ResponseEntity<>("User created successfully", HttpStatus.OK);
 	}
 	
 }
