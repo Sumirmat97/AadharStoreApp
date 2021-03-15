@@ -12,12 +12,16 @@ import org.springframework.stereotype.Service;
 
 import com.example.model.User;
 import com.example.repository.UserRepository;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UserService implements IUserService {
 
 	@Autowired
 	UserRepository repository;
+
+	@Autowired
+	IFileUpload fileUploadService;
 	
 	@Override
 	public List<UserResponseDTO> getAllUsers(String filter, String keyword) {
@@ -28,7 +32,8 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public void createUser(UserRequestDTO userRequestDTO){
+	public void createUser(UserRequestDTO userRequestDTO, MultipartFile multipartFile){
+		userRequestDTO.setAadharFrontUrl(fileUploadService.storeFile(multipartFile));
 		User user = AdapterUtil.adaptToUser(userRequestDTO);
 		repository.save(user);
 	}
@@ -40,5 +45,7 @@ public class UserService implements IUserService {
 			return AdapterUtil.adaptToUserResponseDTO(user.get());
 		return null;
 	}
+
+
 
 }

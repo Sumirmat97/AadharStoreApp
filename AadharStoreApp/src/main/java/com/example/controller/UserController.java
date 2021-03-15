@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.model.User;
 import com.example.service.UserService;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/user/")
@@ -40,8 +41,9 @@ public class UserController {
 
 
 	@PostMapping("create")
-	public ResponseEntity<String> createUser(@RequestBody UserRequestDTO userRequestDTO) {
-		service.createUser(userRequestDTO);
+	public ResponseEntity<String> createUser(@RequestParam("file") MultipartFile multipartFile,
+											 @RequestBody UserRequestDTO userRequestDTO) {
+		service.createUser(userRequestDTO, multipartFile);
 		return new ResponseEntity<>("User created successfully", HttpStatus.OK);
 	}
 	
