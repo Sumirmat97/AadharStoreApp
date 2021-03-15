@@ -26,24 +26,35 @@ public class UserService implements IUserService {
 	@Override
 	public List<UserResponseDTO> getAllUsers(String filter, String keyword) {
 		if(filter != null && keyword != null) {
-			return repository.search(filter, keyword).stream().map(AdapterUtil::adaptToUserResponseDTO).collect(Collectors.toList());
+			switch(filter)
+			{
+				case "name": return repository.searchByName(keyword).stream().map(AdapterUtil::adaptToUserResponseDTO).collect(Collectors.toList());
+				case "address": return repository.searchByAddress(keyword).stream().map(AdapterUtil::adaptToUserResponseDTO).collect(Collectors.toList());
+				case "aadhar": return repository.searchByAadhar(keyword).stream().map(AdapterUtil::adaptToUserResponseDTO).collect(Collectors.toList());
+			}
 		}
 		return (List<UserResponseDTO>) repository.findAll().stream().map(AdapterUtil::adaptToUserResponseDTO).collect(Collectors.toList());
 	}
 
 	@Override
-	public void createUser(UserRequestDTO userRequestDTO, MultipartFile multipartFile){
-		userRequestDTO.setAadharFrontUrl(fileUploadService.storeFile(multipartFile));
-		User user = AdapterUtil.adaptToUser(userRequestDTO);
-		repository.save(user);
+	public UserResponseDTO getUser(Long id) {
+		Optional<User> user = repository.findById(id);
+		
+		if(user.isPresent())
+		{
+			System.out.println(user.get());
+			return AdapterUtil.adaptToUserResponseDTO(user.get());
+		}
+		return null;
 	}
 
 	@Override
-	public UserResponseDTO getUser(Long id) {
-		Optional<User> user = repository.findById(id);
-		if(user.isPresent())
-			return AdapterUtil.adaptToUserResponseDTO(user.get());
-		return null;
+	public void createUser(UserRequestDTO userRequestDTO, MultipartFile aadharFrontImg, MultipartFile aadharBackImg){
+		userRequestDTO.setAadharFrontUrl(fileUploadService.storeFile(aadharFrontImg));
+		userRequestDTO.setAadharBackUrl(fileUploadService.storeFile(aadharBackImg));
+		
+		User user = AdapterUtil.adaptToUser(userRequestDTO);
+		repository.save(user);
 	}
 
 

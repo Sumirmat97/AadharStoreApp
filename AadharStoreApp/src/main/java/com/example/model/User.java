@@ -28,7 +28,7 @@ public class User {
 	@Column(name="aadharBackUrl")
 	private String aadharBackUrl;
 	@Column(name="createdOn")
-	Date createdOn;
+	private Date createdOn;
 	
 	public User() {
 	}
@@ -100,5 +100,12 @@ public class User {
 	public void setCreatedOn(Date createdOn) {
 		this.createdOn = createdOn;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + ", address=" + address + ", aadharNo=" + aadharNo
+				+ ", aadharFrontUrl=" + aadharFrontUrl + ", aadharBackUrl=" + aadharBackUrl + ", createdOn=" + createdOn
+				+ "]";
+	}
+
 }

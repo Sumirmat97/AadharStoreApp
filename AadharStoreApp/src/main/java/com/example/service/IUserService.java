@@ -9,6 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface IUserService {
 	List<UserResponseDTO> getAllUsers(String filter, String keyword);
-	void createUser(UserRequestDTO userRequestDTO, MultipartFile multipartFile);
+	void createUser(UserRequestDTO userRequestDTO, MultipartFile aadharFrontImg, MultipartFile aadharBackImg);
 	UserResponseDTO getUser(Long id);
 }
